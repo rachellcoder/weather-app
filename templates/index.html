@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <h3>Weather Dashboard</h3>
+
+      <form method="POST" class="search">
+        <input
+          name="city"
+          placeholder="Enter city (e.g., Portland)"
+          value="{{ city }}"
+          autocomplete="off"
+        />
+        <button type="submit">Search</button>
+      </form>
+
+      {% if error %}
+        <div class="card error">
+          <strong>Oops:</strong> {{ error }}
+          <div class="hint">
+            If you see (401), your OpenWeather API key is invalid or not activated yet.
+          </div>
+        </div>
+      {% endif %}
+
+      {% if weather %}
+        <div class="card">
+          <div class="row">
+            <h2>{{ weather.city }}</h2>
+            {% if weather.icon %}
+              <img
+                class="icon"
+                src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png"
+                alt="weather icon"
+              />
+            {% endif %}
+          </div>
+
+          <div class="big">{{ weather.temp }}°F</div>
+          <div class="muted">{{ weather.desc }}</div>
+
+          <div class="grid">
+            <div><span class="label">Humidity</span> {{ weather.humidity }}%</div>
+            <div><span class="label">Wind</span> {{ weather.wind }} mph</div>
+          </div>
+        </div>
+      {% endif %}
+      {% if forecast %}
+        <h3 class="section-title">5-Day Forecast</h3>
+        <div class="forecast">
+          {% for d in forecast %}
+            <div class="forecast-day">
+              <div class="dow">{{ d.day }}</div>
+              <div class="date">{{ d.date }}</div>
+
+              {% if d.icon %}
+                <img
+                  class="icon-sm"
+                  src="https://openweathermap.org/img/wn/{{ d.icon }}@2x.png"
+                  alt="forecast icon"
+                />
+              {% endif %}
+
+              <div class="desc">{{ d.desc }}</div>
+              <div class="temps">
+                <span class="hi">{{ d.max }}°</span>
+                <span class="lo">{{ d.min }}°</span>
+              </div>
+            </div>
+      {% endfor %}
+  </div>
+{% endif %}
+
+
+    </main>
+  </body>
+</html>
